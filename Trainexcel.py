@@ -1,4 +1,4 @@
-import os
+ import os
 import random
 import functools
 import numpy as np
@@ -64,13 +64,13 @@ class CustomTrainer(Trainer):
 random.seed(0)
 
 # Load data from Excel
-data_excel = pd.read_excel('your_excel_file.xlsx')
+data_excel = pd.read_excel('your_excel_file.xlsx', header=None, names=['rule_id', 'dataset_name', 'rule_name', 'rule_sql_filter', 'dataset_query', 'owner_name', 'label'])
 
 # Shuffle the data
 data_excel = data_excel.sample(frac=1, random_state=0).reset_index(drop=True)
 
 # Reshape the data
-idx, features, labels = list(zip(*[(row['id'], ' '.join(row[['feature1', 'feature2', 'feature3']]), row['labels']) for _, row in data_excel.iterrows()]))
+idx, features, labels = list(zip(*[(row['rule_id'], ' '.join(row[['dataset_name', 'rule_name', 'rule_sql_filter', 'dataset_query', 'owner_name']]), row['label']) for _, row in data_excel.iterrows()]))
 labels = np.array(labels, dtype=int)
 
 # Split data into train and validation
