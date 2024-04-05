@@ -20,3 +20,19 @@ for attribute in attributes.columns:
 df_combined.drop('label', axis=1, inplace=True)
 
 # Now df_combined contains the desired DataFrame with attribute_name split into multiple columns
+import pandas as pd
+
+# Read the Excel file into a pandas DataFrame
+df = pd.read_excel("your_excel_file.xlsx")
+
+# Split attribute_name into multiple columns
+attributes = df['attribute_name'].str.get_dummies(sep=', ')
+
+# Iterate over unique attributes and create new columns with 0 or 1 values based on label presence
+for attribute in attributes.columns:
+    df[attribute] = df['label'].str.contains(attribute).astype(int)
+
+# Now drop the original columns
+df.drop(['attribute_name', 'label'], axis=1, inplace=True)
+
+# Now df contains the desired DataFrame with attribute_name split into multiple columns
