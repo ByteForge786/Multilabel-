@@ -1,15 +1,22 @@
-import pandas as pd
+import csv
 
-# Read the Excel file
-df = pd.read_excel('your_excel_file.xlsx')
+# Open the input CSV file and create output CSV files for test and train data
+with open('your_csv_file.csv', 'r') as infile, \
+        open('test.csv', 'w', newline='') as testfile, \
+        open('train.csv', 'w', newline='') as trainfile:
 
-# Check if all values from column 6 to the last column are zero for each row
-zero_rows = df.iloc[:, 5:].eq(0).all(axis=1)
+    csvreader = csv.reader(infile)
+    testwriter = csv.writer(testfile)
+    trainwriter = csv.writer(trainfile)
 
-# Split the data based on the condition
-test_data = df[zero_rows]
-train_data = df[~zero_rows]
+    # Write headers to output files
+    header = next(csvreader)
+    testwriter.writerow(header)
+    trainwriter.writerow(header)
 
-# Write the data to new Excel files
-test_data.to_excel('test.xlsx', index=False)
-train_data.to_excel('train.xlsx', index=False)
+    # Iterate through each row and split into test and train based on condition
+    for row in csvreader:
+        if all(int(value) == 0 for value in row[5:]):  # Check if values from column 6 onwards are all zero
+            testwriter.writerow(row)
+        else:
+            trainwriter.writerow(row)
