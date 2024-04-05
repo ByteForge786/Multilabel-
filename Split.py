@@ -1,22 +1,26 @@
-import csv
+ import csv
 
-# Open the input CSV file and create output CSV files for test and train data
-with open('your_csv_file.csv', 'r') as infile, \
-        open('test.csv', 'w', newline='') as testfile, \
-        open('train.csv', 'w', newline='') as trainfile:
+# Read rule IDs from the text file into a set
+with open('rule_ids.txt', 'r') as txtfile:
+    rule_ids = set(txtfile.read().splitlines())
+
+# Open the input CSV file and create output CSV files for data with and without rule IDs
+with open('input_data.csv', 'r') as infile, \
+        open('with_rule_id.csv', 'w', newline='') as with_file, \
+        open('without_rule_id.csv', 'w', newline='') as without_file:
 
     csvreader = csv.reader(infile)
-    testwriter = csv.writer(testfile)
-    trainwriter = csv.writer(trainfile)
+    with_writer = csv.writer(with_file)
+    without_writer = csv.writer(without_file)
 
     # Write headers to output files
     header = next(csvreader)
-    testwriter.writerow(header)
-    trainwriter.writerow(header)
+    with_writer.writerow(header)
+    without_writer.writerow(header)
 
-    # Iterate through each row and split into test and train based on condition
+    # Iterate through each row and split into with and without rule ID
     for row in csvreader:
-        if all(int(value) == 0 for value in row[5:]):  # Check if values from column 6 onwards are all zero
-            testwriter.writerow(row)
+        if row[0] in rule_ids:  # Assuming rule_id is in the first column, adjust if it's in a different column
+            with_writer.writerow(row)
         else:
-            trainwriter.writerow(row)
+            without_writer.writerow(row)
